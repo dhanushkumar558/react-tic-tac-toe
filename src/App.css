@@ -3,6 +3,7 @@
     background-color: black;
     color: white;
     height: 100vh;
+   
 }
 .header
 {
@@ -19,6 +20,7 @@
 }
 .board
 {
+   
     height: 92vh;
     font-size: 2rem;
     font-weight: 900;
@@ -30,11 +32,12 @@
 {
     display: flex;
     height: 20vh;
+
     
 }
 .cell 
 {
-    width: 15vw;
+    width: 12vw;
     border:1px solid white;
     color:black;
     font-size: 5rem;
@@ -56,3 +59,11 @@
     
 }
 
+@media (max-width: 600px)
+{
+    .cell{
+        width:25vw
+
+    }
+   
+}

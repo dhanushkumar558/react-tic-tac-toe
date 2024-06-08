@@ -1,96 +1,100 @@
-import React,{useState} from "react"
-export default function Tictactoe()
-{
-  const [Winner, setwinner]=useState('')
-  const [char, setChar]=useState('X')
-  const [Matrix, setMatrix]=useState([
-    ['','',''],
-    ['','',''],
-    ['','',''],
+import React, { useState } from "react";
+import "./App.css";
 
+export default function Tictactoe() {
+  const [count, setCount] = useState(1);
+  const [winner, setWinner] = useState('');
+  const [char, setChar] = useState('X');
+  const [matrix, setMatrix] = useState([
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', ''],
   ]);
-  const getBGClass =(value)=>
-    {
-      if(value==='X') return 'yellow'
-      if(value==='O') return 'orange'
-      return '';
-    }
-    const checkWinner = () => {
-      // Rows
-      if (Matrix[0][0] && Matrix[0][0] === Matrix[0][1] && Matrix[0][1] === Matrix[0][2]) {
-          setwinner(Matrix[0][0] + ' is the winner');
-      }
-      if (Matrix[1][0] && Matrix[1][0] === Matrix[1][1] && Matrix[1][1] === Matrix[1][2]) {
-          setwinner(Matrix[1][0] + ' is the winner');
-      }
-      if (Matrix[2][0] && Matrix[2][0] === Matrix[2][1] && Matrix[2][1] === Matrix[2][2]) {
-          setwinner(Matrix[2][0] + ' is the winner');
-      }
-      
-      // Columns
-      if (Matrix[0][0] && Matrix[0][0] === Matrix[1][0] && Matrix[1][0] === Matrix[2][0]) {
-          setwinner(Matrix[0][0] + ' is the winner');
-      }
-      if (Matrix[0][1] && Matrix[0][1] === Matrix[1][1] && Matrix[1][1] === Matrix[2][1]) {
-          setwinner(Matrix[0][1] + ' is the winner');
-      }
-      if (Matrix[0][2] && Matrix[0][2] === Matrix[1][2] && Matrix[1][2] === Matrix[2][2]) {
-          setwinner(Matrix[0][2] + ' is the winner');
-      }
-      
-      // Diagonals
-      if (Matrix[0][0] && Matrix[0][0] === Matrix[1][1] && Matrix[1][1] === Matrix[2][2]) {
-          setwinner(Matrix[0][0] + ' is the winner');
-      }
-      if (Matrix[0][2] && Matrix[0][2] === Matrix[1][1] && Matrix[1][1] === Matrix[2][0]) {
-          setwinner(Matrix[0][2] + ' is the winner');
-      }
+
+  const getBGClass = (value) => {
+    if (value === 'X') return 'yellow';
+    if (value === 'O') return 'orange';
+    return '';
   };
-  
-    const handleClick=(r,c)=>{
-      if(Matrix[r][c]) return;
-      const tmpMatrix=[...Matrix];
-      tmpMatrix[r][c]=char;
-      setMatrix(tmpMatrix);
-      setChar(char ==='X'? 'O':'X');
-      checkWinner();
 
+  const checkWinner = (updatedMatrix) => {
+    // Rows
+    for (let i = 0; i < 3; i++) {
+      if (updatedMatrix[i][0] && updatedMatrix[i][0] === updatedMatrix[i][1] && updatedMatrix[i][1] === updatedMatrix[i][2]) {
+        setWinner(`${updatedMatrix[i][0]} is the winner`);
+        return;
+      }
     }
-  return(
-  <div className="app">
 
-<div className="header aligncenter">Tic tac toe</div>
-<div className="aligncenter board">
- {!Winner && <p> {char} turn now</p>}
-  <div className="gameBoard">
-    {} 
- {Winner || 
-Matrix.map((row,rIndex)=>(
-
-  <div className="row">
-    {
-row.map((cell, cIndex)=>(
-<div
-onClick={()=>handleClick(rIndex,cIndex)}
-className={`cell aligncenter ${getBGClass(Matrix[rIndex][cIndex])}`}>{Matrix[rIndex][cIndex]}</div>
-
-))
+    // Columns
+    for (let i = 0; i < 3; i++) {
+      if (updatedMatrix[0][i] && updatedMatrix[0][i] === updatedMatrix[1][i] && updatedMatrix[1][i] === updatedMatrix[2][i]) {
+        setWinner(`${updatedMatrix[0][i]} is the winner`);
+        return;
+      }
     }
-    
+
+    // Diagonals
+    if (updatedMatrix[0][0] && updatedMatrix[0][0] === updatedMatrix[1][1] && updatedMatrix[1][1] === updatedMatrix[2][2]) {
+      setWinner(`${updatedMatrix[0][0]} is the winner`);
+      return;
+    }
+    if (updatedMatrix[0][2] && updatedMatrix[0][2] === updatedMatrix[1][1] && updatedMatrix[1][1] === updatedMatrix[2][0]) {
+      setWinner(`${updatedMatrix[0][2]} is the winner`);
+      return;
+    }
+
+    if (count === 9) {
+      setWinner('The Match has been Drawn');
+    }
+  };
+
+  const handleClick = (r, c) => {
+    if (matrix[r][c] || winner) return;
+
+    const updatedMatrix = [...matrix];
+    updatedMatrix[r][c] = char;
+    setMatrix(updatedMatrix);
+    setChar(char === 'X' ? 'O' : 'X');
+    setCount(count + 1);
+    checkWinner(updatedMatrix);
+  };
+
+  const resetGame = () => {
+    setWinner('');
+    setMatrix([
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', ''],
+    ]);
+    setCount(1);
+    setChar('X');
+  };
+
+  return (
+    <div className="app">
+      <div className="header aligncenter">Tic tac toe</div>
+      <div className="aligncenter board">
+        {!winner && <p>{char} turn now</p>}
+        <div className="gameBoard">
+          {winner || 
+            matrix.map((row, rIndex) => (
+              <div className="row" key={rIndex}>
+                {row.map((cell, cIndex) => (
+                  <div
+                    key={cIndex}
+                    onClick={() => handleClick(rIndex, cIndex)}
+                    className={`cell aligncenter ${getBGClass(matrix[rIndex][cIndex])}`}
+                  >
+                    {matrix[rIndex][cIndex]}
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+        </div>
+        <button onClick={resetGame} className="poi">Restart Game</button>
+      </div>
     </div>
-))
- }
- </div>
- <button onClick={()=>{
-  setwinner('')
-  setMatrix([
-    ['','',''],
-    ['','',''],
-    ['','',''],
-
-  ])
- }} className="poi">Restart Game</button>
-</div>
-  </div>
-);
-} 
+  );
+}
